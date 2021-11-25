@@ -26,7 +26,7 @@ sql = "SELECT code, keyword FROM keyword limit 10;"
 cursor.execute(sql)
 result = cursor.fetchall()
 
-result = pd.DataFrame(result, columns=['code', keyword'])
+result = pd.DataFrame(result, columns=['code', 'keyword'])
 result = result.values.tolist()     # list 값으로 바꾸기
 print(result)
 
