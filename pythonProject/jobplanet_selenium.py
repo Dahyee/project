@@ -44,62 +44,38 @@ bs = BeautifulSoup(driver.page_source, 'html.parser')     # 크롬드라이버 �
 url = re.sub('(?:info)','reviews','https://www.jobplanet.co.kr/'+bs.find("span", attrs={"class":"llogo"}).find("a")["href"])
 driver.get(url)
 
-# driver.find_element_by_xpath("//*[@id=\"mainContents\"]/div[1]/div/div[2]/div[1]/div[1]/a").click()     # full xPath
-
-summary = []
-pros = []
-cons = []
-comment = []
-
-'''
-for i in range(0,5):
-    driver.find_element_by_xpath("/html/body/div[1]/div[3]/div/div[1]/div[3]/article[2]/div/div/div/div[6]/article/a["+str(i+2)+"]").click()     # full xPath
-
-    soup = BeautifulSoup(driver.page_source, 'html.parser')
-
-    summary.append(soup.select('h2.us_label')[i].text.split('"')[1])
-    pros.append(soup.select('dl.tc_list')[i].select('dd.df1')[0].text)
-    cons.append(soup.select('dl.tc_list')[i].select('dd.df1')[1].text)
-    comment.append(soup.select('dl.tc_list')[i].select('dd.df1')[2].text)
-
-    print(summary)
-    print(pros)
-    print(cons)
-    print(comment)
-
-
-
-res = pd.DataFrame({'요약': summary,
-                   '장점': pros,
-                   '단점': cons,
-                   '코멘트': comment})
-res = res.replace(r'\n','',regex = True)
-res.to_excel('jobplanet_review_crawling.xlsx')
-res.head()
-print('작업이 완료되었습니다.')
-
-
-time.sleep(2)
-'''
 
 # 팝업창 닫기
-main = driver.window_handles 
-for handle in main: 
-    if handle != main[0]: 
-        driver.switch_to_window(handle) 
-        driver.close()
+driver.find_element_by_class_name("btn_close_x_ty1").click()
+time.sleep(2)
 
-'''
-for button in buttons:
-    button.click()
-    print(button)
-'''
 
 # 리뷰 크롤링
-reviews = driver.find_elements_by_class_name("us_label")
+summarys = []
+advans = []
+disadvans = []
+comments = []
+stars = []
+
+soup = BeautifulSoup(driver.page_source, 'html.parser')     # 크롬드라이버 현재 페이지 html 파악
+reviews = soup.find_all("div", attrs={"class":"content_wrap"})
+
+advantage = []  # 장점, 단점
+i = 0
 for review in reviews:
-    review = reviews
-    print(review)
+    # 리뷰
+    summary = review.find("h2").get_text()
+    summary = summary.replace("BEST", "")
+    summary = summary.lstrip()
+    summary = summary.rstrip()
+    print("리뷰 : " + summary)
+
+    # 장단점
+    texts = review.find_all("dd", attrs={"class":"df1"})
+    
+    i += 1
+
+
 
 
 
